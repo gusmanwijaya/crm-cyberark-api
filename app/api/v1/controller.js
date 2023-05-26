@@ -111,8 +111,8 @@ module.exports = {
     try {
       const { FromDate, ToDate, Username, Address, Reason } = req.body;
       const { authorization } = req.headers;
-      const splitUsername = Username.split(",");
-      const splitAddress = Address.split(",");
+      const splitUsername = Username.split(";");
+      const splitAddress = Address.split(";");
 
       const _tempAddress = [];
       for (let index = 0; index < splitAddress.length; index++) {
@@ -141,8 +141,15 @@ module.exports = {
         }
       }
 
-      const _temp = [];
+      const arrayAddress = [];
       for (const iterator of _newTempAddress) {
+        if (iterator != null && Object.keys(iterator).length > 0) {
+          arrayAddress.push(iterator);
+        }
+      }
+
+      const _temp = [];
+      for (const iterator of arrayAddress) {
         const response = await axios.get(
           `${API_URL}/api/ExtendedAccounts/${iterator.id}`,
           {
