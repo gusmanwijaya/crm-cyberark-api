@@ -159,14 +159,19 @@ module.exports = {
           }
         );
 
-        _temp.push({
-          accountId: iterator.id,
-          username: iterator.userName,
-          address: iterator.address,
-          conComp:
-            response.data.ActionsToDisplay.ConnectionDisplay
-              .DefaultConnectionComponent,
-        });
+        if (
+          response.data.Details.DualControlStatus !== "ReasonRequired" ||
+          response.data.Details.DualControlStatus !== "Waiting"
+        ) {
+          _temp.push({
+            accountId: iterator.id,
+            username: iterator.userName,
+            address: iterator.address,
+            conComp:
+              response.data.ActionsToDisplay.ConnectionDisplay
+                .DefaultConnectionComponent,
+          });
+        }
       }
 
       let templateForm = {
