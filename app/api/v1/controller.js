@@ -150,7 +150,7 @@ module.exports = {
 
       const _temp = [];
       for (const iterator of arrayAddress) {
-        const response = await axios.get(
+        let response = await axios.get(
           `${API_URL}/api/ExtendedAccounts/${iterator.id}`,
           {
             headers: {
@@ -159,10 +159,9 @@ module.exports = {
           }
         );
 
-        if (
-          response.data.Details.DualControlStatus !== "ReasonRequired" ||
-          response.data.Details.DualControlStatus !== "Waiting"
-        ) {
+        const _tempRole = ["ReasonRequired", "Waiting"];
+
+        if (!_tempRole.includes(response.data.Details.DualControlStatus)) {
           _temp.push({
             accountId: iterator.id,
             username: iterator.userName,
