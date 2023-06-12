@@ -3,6 +3,9 @@ const axios = require("axios");
 const { StatusCodes } = require("http-status-codes");
 const { API_URL } = process.env;
 const { formatErrors, formatResponse } = require("../../utils");
+const { rootPath } = require("../../configs");
+const csv = require("csvtojson");
+const fs = require("fs");
 
 module.exports = {
   signIn: async (req, res) => {
@@ -111,8 +114,26 @@ module.exports = {
     try {
       const { FromDate, ToDate, Username, Address, Reason } = req.body;
       const { authorization } = req.headers;
-      const splitUsername = Username.split(";");
-      const splitAddress = Address.split(";");
+
+      let splitUsername;
+      let splitAddress;
+
+      if (!req.file) {
+        splitUsername = Username.split(";");
+        splitAddress = Address.split(";");
+      } else {
+        const { filename } = req.file;
+        const filePath = `${rootPath}/public/uploads/${filename}`;
+
+        const jsonArray = await csv().fromFile(filePath);
+
+        splitUsername = jsonArray[0]?.Username.replaceAll("-", ";").split(";");
+        splitAddress = jsonArray[0]?.Address.replaceAll("-", ";").split(";");
+
+        if (fs.existsSync(filePath)) {
+          fs.unlinkSync(filePath);
+        }
+      }
 
       const _tempAddress = [];
       for (let index = 0; index < splitAddress.length; index++) {
