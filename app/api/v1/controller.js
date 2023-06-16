@@ -180,7 +180,7 @@ module.exports = {
           }
         );
 
-        const _tempRole = ["ReasonRequired", "Waiting"];
+        const _tempRole = ["ReasonRequired", "Waiting", "Confirmed"];
 
         if (!_tempRole.includes(response.data.Details.DualControlStatus)) {
           _temp.push({
