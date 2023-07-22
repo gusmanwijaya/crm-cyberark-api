@@ -142,6 +142,7 @@ module.exports = {
         let response = await axios.get(`${API_URL}/API/Accounts`, {
           params: {
             search: elementAddress,
+            searchType: "startswith",
           },
           headers: {
             Authorization: authorization,
@@ -151,26 +152,30 @@ module.exports = {
         _tempAddress.push(response.data.value);
       }
 
-      const _newTempAddress = [];
-      for (const iteratorAddress of _tempAddress) {
-        for (const iteratorUsername of splitUsername) {
-          _newTempAddress.push(
-            iteratorAddress.filter(
-              (value) => value.userName == iteratorUsername
-            )[0]
-          );
+      const _tempFilterAddress = [];
+      for (const iteratorTempAddress of _tempAddress) {
+        for (const iterator of iteratorTempAddress) {
+          if (
+            splitAddress.length > 0 &&
+            splitAddress.includes(iterator.address)
+          ) {
+            _tempFilterAddress.push({ ...iterator });
+          }
         }
       }
 
-      const arrayAddress = [];
-      for (const iterator of _newTempAddress) {
-        if (iterator != null && Object.keys(iterator).length > 0) {
-          arrayAddress.push(iterator);
+      const _newTempAddress = [];
+      for (const iteratorAddress of _tempFilterAddress) {
+        if (
+          splitUsername.length > 0 &&
+          splitUsername.includes(iteratorAddress.userName)
+        ) {
+          _newTempAddress.push({ ...iteratorAddress });
         }
       }
 
       const _temp = [];
-      for (const iterator of arrayAddress) {
+      for (const iterator of _newTempAddress) {
         let response = await axios.get(
           `${API_URL}/api/ExtendedAccounts/${iterator.id}`,
           {
