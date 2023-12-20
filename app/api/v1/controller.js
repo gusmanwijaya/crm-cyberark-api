@@ -191,7 +191,9 @@ module.exports = {
           _temp.push({
             accountId: iterator.id,
             username: iterator.userName,
-            address: iterator.address,
+            address: iterator.address.includes(",")
+              ? iterator.address.split(",")[0]
+              : iterator.address,
             conComp:
               response.data.ActionsToDisplay.ConnectionDisplay
                 .DefaultConnectionComponent,
